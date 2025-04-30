@@ -12,12 +12,17 @@ class DeviceData extends Model
     protected $fillable = [
         'patient_id',
         'device_type',
-        'reading_value',
+        'data',
         'unit',
         'recorded_at',
         'notes'
     ];
-
+    
+    protected $casts = [
+        'data' => 'array',
+        'recorded_at' => 'datetime',
+    ];
+    
     public function patient()
     {
         return $this->belongsTo(Patient::class);

@@ -6,27 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('specialization');
-            $table->string('phone');
-            $table->integer('experience');
+            $table->string('phone')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('qualification')->nullable();
+            $table->string('specialization')->nullable();
+            $table->string('department')->nullable();
+            $table->string('profile_photo')->nullable();
+            $table->string('address')->nullable();
+            $table->date('date_of_joining')->nullable();
+            $table->integer('experience')->nullable();
+            $table->boolean('is_available')->default(true);
+            $table->string('room_number')->nullable();
+            $table->string('timing')->nullable();
+            $table->decimal('consultation_fee', 8, 2)->nullable();
+            $table->text('bio')->nullable();
+            $table->string('license_number')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }
-    
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('doctors');
     }

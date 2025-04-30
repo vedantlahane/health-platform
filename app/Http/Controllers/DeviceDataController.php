@@ -20,20 +20,7 @@ class DeviceDataController extends Controller
         return view('device-data.create', compact('patients'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'device_type' => 'required|string',
-            'reading_value' => 'required|string',
-            'unit' => 'nullable|string',
-            'recorded_at' => 'required|date',
-            'notes' => 'nullable|string'
-        ]);
-
-        DeviceData::create($validated);
-        return redirect()->route('device-data.index')->with('success', 'Device data recorded successfully.');
-    }
+    
 
     public function show(DeviceData $deviceData)
     {
@@ -46,20 +33,36 @@ class DeviceDataController extends Controller
         return view('device-data.edit', compact('deviceData', 'patients'));
     }
 
-    public function update(Request $request, DeviceData $deviceData)
-    {
-        $validated = $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'device_type' => 'required|string',
-            'reading_value' => 'required|string',
-            'unit' => 'nullable|string',
-            'recorded_at' => 'required|date',
-            'notes' => 'nullable|string'
-        ]);
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'patient_id'   => 'required|exists:patients,id',
+        'device_type'  => 'required|string',
+        'data'         => 'required|array',
+        'unit'         => 'nullable|string',
+        'recorded_at'  => 'required|date',
+        'notes'        => 'nullable|string'
+    ]);
 
-        $deviceData->update($validated);
-        return redirect()->route('device-data.index')->with('success', 'Device data updated successfully.');
-    }
+    DeviceData::create($validated);
+    return redirect()->route('device-data.index')->with('success', 'Device data recorded successfully.');
+}
+
+public function update(Request $request, DeviceData $deviceData)
+{
+    $validated = $request->validate([
+        'patient_id'   => 'required|exists:patients,id',
+        'device_type'  => 'required|string',
+        'data'         => 'required|array',
+        'unit'         => 'nullable|string',
+        'recorded_at'  => 'required|date',
+        'notes'        => 'nullable|string'
+    ]);
+
+    $deviceData->update($validated);
+    return redirect()->route('device-data.index')->with('success', 'Device data updated successfully.');
+}
+
 
     public function destroy(DeviceData $deviceData)
     {

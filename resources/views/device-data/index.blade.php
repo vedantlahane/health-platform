@@ -18,7 +18,7 @@
                 <tr>
                     <th class="py-2 px-4 border-b text-left">Patient</th>
                     <th class="py-2 px-4 border-b text-left">Device Type</th>
-                    <th class="py-2 px-4 border-b text-left">Reading</th>
+                    <th class="py-2 px-4 border-b text-left">Readings</th>
                     <th class="py-2 px-4 border-b text-left">Recorded At</th>
                     <th class="py-2 px-4 border-b text-left">Actions</th>
                 </tr>
@@ -28,8 +28,14 @@
                     <tr>
                         <td class="py-2 px-4 border-b">{{ $data->patient->name }}</td>
                         <td class="py-2 px-4 border-b">{{ $data->device_type }}</td>
-                        <td class="py-2 px-4 border-b">{{ $data->reading_value }} {{ $data->unit }}</td>
-                        <td class="py-2 px-4 border-b">{{ $data->recorded_at }}</td>
+                        <td class="py-2 px-4 border-b">
+                            @foreach($data->data as $key => $value)
+                                <span class="inline-block bg-blue-50 text-blue-800 rounded px-2 py-1 text-xs font-semibold mr-1 mb-1">
+                                    {{ ucfirst(str_replace('_', ' ', $key)) }}: {{ $value }}
+                                </span>
+                            @endforeach
+                        </td>
+                        <td class="py-2 px-4 border-b">{{ \Carbon\Carbon::parse($data->recorded_at)->format('d M Y, H:i') }}</td>
                         <td class="py-2 px-4 border-b">
                             <a href="{{ route('device-data.show', $data) }}" class="text-blue-500 hover:underline mr-2">View</a>
                             <a href="{{ route('device-data.edit', $data) }}" class="text-yellow-500 hover:underline mr-2">Edit</a>

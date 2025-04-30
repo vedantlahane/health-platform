@@ -10,19 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-    {
-        Schema::create('device_data', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
-            $table->string('device_type');
-            $table->string('reading_value');
-            $table->string('unit')->nullable();
-            $table->dateTime('recorded_at');
-            $table->text('notes')->nullable();
-            $table->timestamps();
-        });
-    }
-    
+{
+    Schema::create('device_data', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+        $table->string('device_type');
+        $table->json('data'); // <-- Flexible readings
+        $table->string('unit')->nullable(); // Optional: general unit
+        $table->dateTime('recorded_at');
+        $table->text('notes')->nullable();
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.
