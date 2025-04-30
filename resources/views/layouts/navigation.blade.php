@@ -4,11 +4,17 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+              <!-- Logo -->
+<div class="shrink-0 flex items-center">
+    <a href="{{ route('dashboard') }}">
+        <svg class="w-10 h-16 text-blue-500" fill="none" viewBox="0 0 48 48" stroke="currentColor">
+            <rect width="48" height="48" rx="12" fill="#3b82f6" opacity="0.1"/>
+            <path stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  d="M24 14v20M14 24h20"/>
+        </svg>
+    </a>
+</div>
+
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
@@ -31,19 +37,31 @@
                         {{ __('Billing') }}
                     </x-nav-link>
                     <!-- Dark Mode Toggle Button (Desktop) -->
-                    <button
-                        id="theme-toggle"
-                        class="ml-4 p-2 rounded focus:outline-none focus:ring"
-                        aria-label="Toggle Dark Mode"
-                        title="Toggle Dark Mode"
-                    >
-                        <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293a8 8 0 01-11.586 0 8 8 0 0111.586 0zm-2.121 2.122a6 6 0 01-8.486 0 6 6 0 018.486 0z"></path>
-                        </svg>
-                        <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a1 1 0 110-2 1 1 0 010 2zm0 16a1 1 0 110 2 1 1 0 010-2zm8-8a1 1 0 110 2 1 1 0 010-2zm-16 0a1 1 0 110 2 1 1 0 010-2zm12.071-7.071a1 1 0 01.707 1.707l-1.414 1.414a1 1 0 01-1.414-1.414l1.414-1.414a1 1 0 011.707.707zm-10.142 0a1 1 0 00-1.707.707 1 1 0 00.293.707l1.414 1.414a1 1 0 001.414-1.414L2.636 2.636a1 1 0 00-.707-.293zm10.142 14.142a1 1 0 01.707-1.707l1.414 1.414a1 1 0 01-1.414 1.414l-1.414-1.414a1 1 0 01.707-.707zm-10.142 0a1 1 0 00.707 1.707 1 1 0 00.707-.293l1.414-1.414a1 1 0 00-1.414-1.414L2.636 17.364a1 1 0 00-.293.707zM10 6a4 4 0 100 8 4 4 0 000-8z"></path>
-                        </svg>Theme
-                    </button>
+                    <!-- Dark Mode Toggle Button (Desktop, always right) -->
+<button
+id="theme-toggle"
+class="ml-4 p-2 rounded focus:outline-none focus:ring"
+aria-label="Toggle Dark Mode"
+title="Toggle Dark Mode"
+>
+<svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="none" stroke="orange" stroke-width="2" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="5" />
+    <g>
+        <line x1="12" y1="1" x2="12" y2="3" />
+        <line x1="12" y1="21" x2="12" y2="23" />
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+        <line x1="1" y1="12" x2="3" y2="12" />
+        <line x1="21" y1="12" x2="23" y2="12" />
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </g>
+</svg>
+<svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="none" stroke="black" stroke-width="2" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
+</svg>
+
+</button>
                 </div>
             </div>
 

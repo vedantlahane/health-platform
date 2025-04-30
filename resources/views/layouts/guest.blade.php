@@ -18,7 +18,11 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <svg class="w-10 h-16 text-blue-500" fill="none" viewBox="0 0 48 48" stroke="currentColor">
+                        <rect width="48" height="48" rx="12" fill="#3b82f6" opacity="0.1"/>
+                        <path stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                              d="M24 14v20M14 24h20"/>
+                    </svg>
                 </a>
             </div>
 

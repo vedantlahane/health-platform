@@ -12,9 +12,19 @@ class Patient extends Model
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'dob',
         'gender',
-        'medical_history'
+        'blood_group',
+        'address',
+        'allergies',
+        'medications',
+        'family_history',
+        'social_history',
+        'emergency_contact',
+        'insurance',
+        'last_visit',
+        'medical_history',
     ];
 
     public function appointments()

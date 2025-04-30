@@ -26,8 +26,18 @@ class PatientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:patients,email',
+            'phone' => 'nullable|string|max:20',
             'dob' => 'required|date',
             'gender' => 'required',
+            'blood_group' => 'nullable|string|max:10',
+            'address' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string',
+            'medications' => 'nullable|string',
+            'family_history' => 'nullable|string',
+            'social_history' => 'nullable|string',
+            'emergency_contact' => 'nullable|string|max:50',
+            'insurance' => 'nullable|string|max:100',
+            'last_visit' => 'nullable|date',
             'medical_history' => 'nullable|string',
         ]);
 
@@ -54,8 +64,18 @@ class PatientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:patients,email,' . $patient->id,
+            'phone' => 'nullable|string|max:20',
             'dob' => 'required|date',
             'gender' => 'required',
+            'blood_group' => 'nullable|string|max:10',
+            'address' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string',
+            'medications' => 'nullable|string',
+            'family_history' => 'nullable|string',
+            'social_history' => 'nullable|string',
+            'emergency_contact' => 'nullable|string|max:50',
+            'insurance' => 'nullable|string|max:100',
+            'last_visit' => 'nullable|date',
             'medical_history' => 'nullable|string',
         ]);
 
