@@ -12,11 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->foreignId('doctor_id')->constrained()->onDelete('cascade');
-            $table->string('specialization')->nullable(); // Add this
+            $table->string('specialization')->nullable();
             $table->dateTime('appointment_time');
             $table->string('status')->default('scheduled');
-            $table->string('type')->nullable(); // e.g. consultation, follow-up, procedure
-            $table->string('reason')->nullable(); // Add this
+            $table->string('type')->nullable();
+            $table->string('reason')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
