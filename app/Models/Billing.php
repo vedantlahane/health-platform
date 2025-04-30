@@ -12,12 +12,24 @@ class Billing extends Model
     protected $fillable = [
         'patient_id',
         'invoice_number',
-        'amount',
+        'items',
+        'subtotal',
+        'tax',
+        'discount',
+        'total',
         'status',
+        'payment_method',
+        'paid_at',
         'due_date',
         'description'
     ];
-
+    
+    protected $casts = [
+        'items' => 'array',
+        'paid_at' => 'date',
+        'due_date' => 'date',
+    ];
+    
     public function patient()
     {
         return $this->belongsTo(Patient::class);

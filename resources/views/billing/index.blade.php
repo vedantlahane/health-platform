@@ -1,8 +1,10 @@
 <x-app-layout>
-    <x-slot name="header"> 
+    <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Billing & Invoices</h1>
-            <a href="{{ route('billing.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Create New Invoice</a>
+            <h1 class="text-3xl font-extrabold text-blue-800 mb-2">Billing & Invoices</h1>
+            <a href="{{ route('billing.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold shadow transition">
+                + Create New Invoice
+            </a>
         </div>
     </x-slot>
 
@@ -13,23 +15,22 @@
     @endif
 
     <div class="overflow-x-auto">
-        <table class="min-w-full bg-white">
-            <thead class="bg-gray-100">
+        <table class="min-w-full bg-white rounded-xl shadow-lg border border-gray-200">
+            <thead class="bg-blue-50 border-b border-blue-100 text-blue-800">
                 <tr>
-                    <th class="py-2 px-4 border-b text-left">Invoice #</th>
-                    <th class="py-2 px-4 border-b text-left">Patient</th>
-                    <th class="py-2 px-4 border-b text-left">Amount</th>
-                    <th class="py-2 px-4 border-b text-left">Status</th>
-                    <th class="py-2 px-4 border-b text-left">Due Date</th>
-                    <th class="py-2 px-4 border-b text-left">Actions</th>
+                    <th class="py-3 px-4 text-left font-semibold">Invoice #</th>
+                    <th class="py-3 px-4 text-left font-semibold">Patient</th>
+                    <th class="py-3 px-4 text-left font-semibold">Status</th>
+                    <th class="py-3 px-4 text-left font-semibold">Total</th>
+                    <th class="py-3 px-4 text-left font-semibold">Due Date</th>
+                    <th class="py-3 px-4 text-left font-semibold">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($billings as $billing)
-                    <tr>
+                    <tr class="hover:bg-blue-50 transition">
                         <td class="py-2 px-4 border-b">{{ $billing->invoice_number }}</td>
                         <td class="py-2 px-4 border-b">{{ $billing->patient->name }}</td>
-                        <td class="py-2 px-4 border-b">${{ number_format($billing->amount, 2) }}</td>
                         <td class="py-2 px-4 border-b">
                             <span class="px-2 py-1 rounded text-xs 
                                 @if($billing->status == 'paid') bg-green-100 text-green-800
@@ -39,6 +40,7 @@
                                 {{ ucfirst($billing->status) }}
                             </span>
                         </td>
+                        <td class="py-2 px-4 border-b font-bold text-blue-700">${{ number_format($billing->total, 2) }}</td>
                         <td class="py-2 px-4 border-b">{{ $billing->due_date }}</td>
                         <td class="py-2 px-4 border-b">
                             <a href="{{ route('billing.show', $billing) }}" class="text-blue-500 hover:underline mr-2">View</a>

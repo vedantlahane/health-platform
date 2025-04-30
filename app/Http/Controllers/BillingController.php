@@ -20,20 +20,6 @@ class BillingController extends Controller
         return view('billing.create', compact('patients'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'invoice_number' => 'required|string|unique:billings',
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|string',
-            'due_date' => 'required|date',
-            'description' => 'nullable|string'
-        ]);
-
-        Billing::create($validated);
-        return redirect()->route('billing.index')->with('success', 'Billing created successfully.');
-    }
 
     public function show(Billing $billing)
     {
@@ -46,20 +32,71 @@ class BillingController extends Controller
         return view('billing.edit', compact('billing', 'patients'));
     }
 
-    public function update(Request $request, Billing $billing)
-    {
-        $validated = $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'invoice_number' => 'required|string|unique:billings,invoice_number,' . $billing->id,
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|string',
-            'due_date' => 'required|date',
-            'description' => 'nullable|string'
-        ]);
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'patient_id' => 'required|exists:patients,id',
+        'invoice_number' => 'required|string|unique:billings',
+        'items' => 'required|array|min:1',
+        'items.*.name' => 'required|string',
+        'items.*.quantity' => 'required|integer|min:1',
+        'items.*.unit_price' => 'required|numeric|min:0',
+        'tax' => 'nullable|numeric|min:0',
+        'discount' => 'nullable|numeric|min:0',
+        'status' => 'required|string',
+        'payment_method' => 'nullable|string',
+        'paid_at' => 'nullable|date',
+        'due_date' => 'required|date',
+        'description' => 'nullable|string'
+    ]);
 
-        $billing->update($validated);
-        return redirect()->route('billing.index')->with('success', 'Billing updated successfully.');
-    }
+    // Calculate subtotal, total
+    $subtotal = collect($validated['items'])->sum(function($item) {
+        return $item['quantity'] * $item['unit_price'];
+    });
+    $tax = $validated['tax'] ?? 0;
+    $discount = $validated['discount'] ?? 0;
+    $total = $subtotal + $tax - $discount;
+
+    $validated['subtotal'] = $subtotal;
+    $validated['total'] = $total;
+
+    Billing::create($validated);
+    return redirect()->route('billing.index')->with('success', 'Billing created successfully.');
+}
+
+public function update(Request $request, Billing $billing)
+{
+    $validated = $request->validate([
+        'patient_id' => 'required|exists:patients,id',
+        'invoice_number' => 'required|string|unique:billings,invoice_number,' . $billing->id,
+        'items' => 'required|array|min:1',
+        'items.*.name' => 'required|string',
+        'items.*.quantity' => 'required|integer|min:1',
+        'items.*.unit_price' => 'required|numeric|min:0',
+        'tax' => 'nullable|numeric|min:0',
+        'discount' => 'nullable|numeric|min:0',
+        'status' => 'required|string',
+        'payment_method' => 'nullable|string',
+        'paid_at' => 'nullable|date',
+        'due_date' => 'required|date',
+        'description' => 'nullable|string'
+    ]);
+
+    $subtotal = collect($validated['items'])->sum(function($item) {
+        return $item['quantity'] * $item['unit_price'];
+    });
+    $tax = $validated['tax'] ?? 0;
+    $discount = $validated['discount'] ?? 0;
+    $total = $subtotal + $tax - $discount;
+
+    $validated['subtotal'] = $subtotal;
+    $validated['total'] = $total;
+
+    $billing->update($validated);
+    return redirect()->route('billing.index')->with('success', 'Billing updated successfully.');
+}
+
 
     public function destroy(Billing $billing)
     {
