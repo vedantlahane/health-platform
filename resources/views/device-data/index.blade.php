@@ -22,11 +22,12 @@
                     <th class="py-3 px-4 text-left font-semibold">Device Type</th>
                     <th class="py-3 px-4 text-left font-semibold">Readings</th>
                     <th class="py-3 px-4 text-left font-semibold">Recorded At</th>
+                    <th class="py-3 px-4 text-left font-semibold">Billable</th>
                     <th class="py-3 px-4 text-left font-semibold">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($deviceData as $data)
+                @forelse($deviceData as $data)
                     <tr class="hover:bg-blue-50 transition">
                         <td class="py-2 px-4 border-b font-medium text-gray-900">{{ $data->patient->name }}</td>
                         <td class="py-2 px-4 border-b text-gray-700">{{ $data->device_type }}</td>
@@ -39,6 +40,13 @@
                         </td>
                         <td class="py-2 px-4 border-b text-gray-700">{{ \Carbon\Carbon::parse($data->recorded_at)->format('d M Y, H:i') }}</td>
                         <td class="py-2 px-4 border-b">
+                            @if($data->is_billable)
+                                <span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Yes</span>
+                            @else
+                                <span class="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">No</span>
+                            @endif
+                        </td>
+                        <td class="py-2 px-4 border-b">
                             <a href="{{ route('device-data.show', $data) }}" class="text-blue-500 hover:underline mr-2">View</a>
                             <a href="{{ route('device-data.edit', $data) }}" class="text-yellow-500 hover:underline mr-2">Edit</a>
                             <form action="{{ route('device-data.destroy', $data) }}" method="POST" class="inline">
@@ -48,7 +56,11 @@
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">No device data found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

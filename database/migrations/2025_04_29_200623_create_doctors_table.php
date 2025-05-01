@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,6 +9,7 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('specialization')->nullable();
             $table->string('department')->nullable();
             $table->string('profile_photo')->nullable();
-            $table->string('address')->nullable();
+            $table->text('address')->nullable();
             $table->date('date_of_joining')->nullable();
             $table->integer('experience')->nullable();
             $table->boolean('is_available')->default(true);
@@ -29,7 +29,14 @@ return new class extends Migration
             $table->string('license_number')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->string('status')->default('active'); // active, inactive, retired, etc.
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['name']);
+            $table->index(['email']);
+            $table->index(['specialization']);
+            $table->index(['department']);
         });
     }
 

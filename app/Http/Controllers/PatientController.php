@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PatientController extends Controller
 {
@@ -40,6 +41,8 @@ class PatientController extends Controller
             'last_visit' => 'nullable|date',
             'medical_history' => 'nullable|string',
         ]);
+
+        $validated['uuid'] = Str::uuid();
 
         Patient::create($validated);
 

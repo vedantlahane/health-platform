@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-3xl font-extrabold text-blue-800 mb-4">Create New Invoice</h1>
-        <p class="text-gray-600">Add billing items and see totals calculated instantly.</p>
+        <h1 class="text-3xl font-extrabold text-blue-800 mb-4">Edit Invoice</h1>
+        <p class="text-gray-600">Update invoice details and items.</p>
     </x-slot>
 
     @if ($errors->any())
@@ -14,39 +14,23 @@
         </div>
     @endif
 
-    <form action="{{ route('billing.store') }}" method="POST" id="billing-form" class="bg-white p-10 rounded-2xl shadow-xl mb-10 mx-auto space-y-8">
+    <form action="{{ route('billing.update', $billing) }}" method="POST" id="billing-form" class="bg-white p-10 rounded-2xl shadow-xl mb-10 mx-auto space-y-8">
         @csrf
+        @method('PUT')
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label class="font-semibold">Patient</label>
-                <select name="patient_id" id="patient-select" class="border p-2 w-full rounded" required>
+                <select name="patient_id" class="border p-2 w-full rounded" required>
                     <option value="">Select Patient</option>
                     @foreach($patients as $patient)
-                        <option value="{{ $patient->id }}" {{ (old('patient_id', $selectedPatient->id ?? '') == $patient->id) ? 'selected' : '' }}>{{ $patient->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="font-semibold">Appointment (Optional)</label>
-                <select name="appointment_id" id="appointment-select" class="border p-2 w-full rounded">
-                    <option value="">Select Appointment</option>
-                    @foreach($appointments as $appointment)
-                        <option value="{{ $appointment->id }}" 
-                            data-patient="{{ $appointment->patient_id }}"
-                            {{ (old('appointment_id', $selectedAppointment->id ?? '') == $appointment->id) ? 'selected' : '' }}>
-                            {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('M d, Y, H:i') }} - Dr. {{ $appointment->doctor->name }}
-                        </option>
+                        <option value="{{ $patient->id }}" {{ old('patient_id', $billing->patient_id) == $patient->id ? 'selected' : '' }}>{{ $patient->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
                 <label class="font-semibold">Invoice Number</label>
-                <input type="text" name="invoice_number" class="border p-2 w-full rounded" value="{{ old('invoice_number', 'INV-'.date('Ymd').'-'.rand(1000, 9999)) }}" readonly>
-            </div>
-            <div>
-                <label class="font-semibold">Payment Method</label>
-                <input type="text" name="payment_method" class="border p-2 w-full rounded" value="{{ old('payment_method', 'Cash') }}" placeholder="e.g. Cash, Card, UPI" required>
+                <input type="text" name="invoice_number" class="border p-2 w-full rounded" value="{{ old('invoice_number', $billing->invoice_number) }}" required>
             </div>
         </div>
 
@@ -73,8 +57,8 @@
                                 <td><button type="button" onclick="this.closest('tr').remove(); updateTotals();" class="text-red-600">Remove</button></td>
                             </tr>
                         @endforeach
-                    @elseif(isset($defaultItems) && count($defaultItems) > 0)
-                        @foreach($defaultItems as $item)
+                    @else
+                        @foreach($billing->items as $item)
                             <tr>
                                 <td><input type="text" class="border p-2 rounded item-name" value="{{ $item['name'] }}" required></td>
                                 <td><input type="number" class="border p-2 rounded item-qty" value="{{ $item['quantity'] }}" min="1" required></td>
@@ -87,21 +71,21 @@
                 </tbody>
             </table>
             <button type="button" onclick="addItemRow()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">+ Add Item</button>
-            <input type="hidden" name="items" id="items-json" value="{{ old('items') }}">
+            <input type="hidden" name="items" id="items-json" value="{{ old('items', json_encode($billing->items)) }}">
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
                 <label class="font-semibold">Subtotal</label>
-                <input type="text" id="subtotal" class="border p-2 w-full rounded bg-gray-100" readonly value="{{ old('subtotal', $subtotal ?? 0) }}">
+                <input type="text" id="subtotal" class="border p-2 w-full rounded bg-gray-100" readonly>
             </div>
             <div>
                 <label class="font-semibold">Tax</label>
-                <input type="number" step="0.01" name="tax" id="tax" class="border p-2 w-full rounded" value="{{ old('tax', 0) }}">
+                <input type="number" step="0.01" name="tax" id="tax" class="border p-2 w-full rounded" value="{{ old('tax', $billing->tax) }}">
             </div>
             <div>
                 <label class="font-semibold">Discount</label>
-                <input type="number" step="0.01" name="discount" id="discount" class="border p-2 w-full rounded" value="{{ old('discount', 0) }}">
+                <input type="number" step="0.01" name="discount" id="discount" class="border p-2 w-full rounded" value="{{ old('discount', $billing->discount) }}">
             </div>
             <div>
                 <label class="font-semibold">Total</label>
@@ -109,15 +93,41 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="font-semibold">Status</label>
+                <select name="status" class="border p-2 w-full rounded" required>
+                    <option value="unpaid" {{ old('status', $billing->status) == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                    <option value="paid" {{ old('status', $billing->status) == 'paid' ? 'selected' : '' }}>Paid</option>
+                    <option value="partial" {{ old('status', $billing->status) == 'partial' ? 'selected' : '' }}>Partially Paid</option>
+                </select>
+            </div>
+            <div>
+                <label class="font-semibold">Payment Method</label>
+                <input type="text" name="payment_method" class="border p-2 w-full rounded" value="{{ old('payment_method', $billing->payment_method) }}" placeholder="e.g. Cash, Card, UPI">
+            </div>
+            <div>
+                <label class="font-semibold">Paid Date</label>
+                <input type="date" name="paid_at" class="border p-2 w-full rounded"
+    value="{{ old('paid_at', optional($billing->paid_at)->format('Y-m-d')) }}">
+
+            <div>
+                <label class="font-semibold">Due Date</label>
+                <input type="date" name="due_date" class="border p-2 w-full rounded"
+    value="{{ old('due_date', $billing->due_date?->format('Y-m-d')) }}" required>
+
+            </div>
+        </div>
+
         <div>
             <label class="font-semibold">Description</label>
-            <textarea name="description" rows="3" class="border p-2 w-full rounded" placeholder="Any additional notes...">{{ old('description') }}</textarea>
+            <textarea name="description" rows="3" class="border p-2 w-full rounded" placeholder="Any additional notes...">{{ old('description', $billing->description) }}</textarea>
         </div>
 
         <div class="flex justify-end gap-4">
             <a href="{{ route('billing.index') }}" class="bg-gray-100 hover:bg-gray-200 text-blue-600 px-6 py-2 rounded-lg font-semibold shadow transition">Cancel</a>
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-lg font-bold shadow transition">
-                Create Invoice
+                Update Invoice
             </button>
         </div>
     </form>
@@ -160,38 +170,6 @@
 
             document.getElementById('items-json').value = JSON.stringify(items);
         }
-
-        // Filter appointments by selected patient
-        document.getElementById('patient-select').addEventListener('change', function() {
-            const patientId = this.value;
-            const appointmentSelect = document.getElementById('appointment-select');
-            
-            Array.from(appointmentSelect.options).forEach(option => {
-                if (!option.value) return; // Skip the placeholder option
-                
-                if (option.getAttribute('data-patient') === patientId) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-            
-            // Reset appointment selection
-            appointmentSelect.value = '';
-        });
-        
-        // Auto-select patient when appointment is selected
-        document.getElementById('appointment-select').addEventListener('change', function() {
-            if (this.value) {
-                const patientId = this.selectedOptions[0].getAttribute('data-patient');
-                document.getElementById('patient-select').value = patientId;
-                
-                // Reload page with appointment ID to get default items
-                if (!window.location.href.includes('appointment_id=')) {
-                    window.location.href = `?appointment_id=${this.value}`;
-                }
-            }
-        });
 
         document.getElementById('billing-form').addEventListener('input', updateTotals);
 

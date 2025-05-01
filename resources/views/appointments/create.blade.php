@@ -51,14 +51,16 @@
             </div>
             <div>
                 <label class="font-semibold">Appointment Date & Time</label>
-                <input type="datetime-local" name="appointment_time" value="{{ old('appointment_time') }}" class="border p-2 w-full rounded" required>
+                <input type="datetime-local" name="appointment_time"
+                       value="{{ old('appointment_time', now()->format('Y-m-d\TH:i')) }}"
+                       class="border p-2 w-full rounded" required>
             </div>
             <div>
                 <label class="font-semibold">Status</label>
                 <select name="status" class="border p-2 w-full rounded" required>
-                    <option value="scheduled" @selected(old('status') == 'scheduled')>Scheduled</option>
-                    <option value="completed" @selected(old('status') == 'completed')>Completed</option>
-                    <option value="cancelled" @selected(old('status') == 'cancelled')>Cancelled</option>
+                    <option value="scheduled" @selected(old('status', 'scheduled') == 'scheduled')>Scheduled</option>
+                    {{-- <option value="completed" @selected(old('status') == 'completed')>Completed</option>
+                    <option value="cancelled" @selected(old('status') == 'cancelled')>Cancelled</option> --}}
                 </select>
             </div>
             <div>
@@ -87,15 +89,18 @@
     </form>
 
     <script>
-        // Optional: Filter doctors by specialization
         document.getElementById('specialization-select').addEventListener('change', function() {
             var selectedSpec = this.value;
             var doctorSelect = document.getElementById('doctor-select');
             Array.from(doctorSelect.options).forEach(function(option) {
-                if (!option.value) return; // Skip placeholder
+                if (!option.value) return;
                 option.style.display = option.getAttribute('data-specialization') === selectedSpec ? '' : 'none';
             });
             doctorSelect.value = '';
         });
+        // On page load, trigger change for edit mode or old input
+        window.onload = function() {
+            document.getElementById('specialization-select').dispatchEvent(new Event('change'));
+        };
     </script>
 </x-app-layout>

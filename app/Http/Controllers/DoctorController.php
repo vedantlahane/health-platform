@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Doctor;
+use Illuminate\Support\Str;
 
 class DoctorController extends Controller
 {
@@ -40,7 +41,13 @@ class DoctorController extends Controller
             'license_number'    => 'nullable|string|max:100',
             'created_by'        => 'nullable|integer',
             'updated_by'        => 'nullable|integer',
+            'status'            => 'nullable|string|max:20',
         ]);
+
+        $validated['uuid'] = Str::uuid();
+        $validated['is_available'] = $request->has('is_available') ? (bool)$request->input('is_available') : true;
+        $validated['status'] = $validated['status'] ?? 'active';
+
         Doctor::create($validated);
         return redirect()->route('doctors.index')->with('success', 'Doctor created successfully.');
     }
@@ -77,7 +84,12 @@ class DoctorController extends Controller
             'license_number'    => 'nullable|string|max:100',
             'created_by'        => 'nullable|integer',
             'updated_by'        => 'nullable|integer',
+            'status'            => 'nullable|string|max:20',
         ]);
+
+        $validated['is_available'] = $request->has('is_available') ? (bool)$request->input('is_available') : true;
+        $validated['status'] = $validated['status'] ?? 'active';
+
         $doctor->update($validated);
         return redirect()->route('doctors.index')->with('success', 'Doctor updated successfully.');
     }

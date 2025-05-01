@@ -22,12 +22,13 @@
                     <th class="py-3 px-4 text-left font-semibold">Patient</th>
                     <th class="py-3 px-4 text-left font-semibold">Status</th>
                     <th class="py-3 px-4 text-left font-semibold">Total</th>
-                    <th class="py-3 px-4 text-left font-semibold">Due Date</th>
+                    <th class="py-3 px-4 text-left font-semibold">Payment Method</th>
+                    <th class="py-3 px-4 text-left font-semibold">Paid/Due Date</th>
                     <th class="py-3 px-4 text-left font-semibold">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($billings as $billing)
+                @forelse($billings as $billing)
                     <tr class="hover:bg-blue-50 transition">
                         <td class="py-2 px-4 border-b">{{ $billing->invoice_number }}</td>
                         <td class="py-2 px-4 border-b">{{ $billing->patient->name }}</td>
@@ -41,18 +42,35 @@
                             </span>
                         </td>
                         <td class="py-2 px-4 border-b font-bold text-blue-700">${{ number_format($billing->total, 2) }}</td>
-                        <td class="py-2 px-4 border-b">{{ $billing->due_date }}</td>
+                        <td class="py-2 px-4 border-b">{{ $billing->payment_method ?? 'N/A' }}</td>
+                        <td class="py-2 px-4 border-b">
+                            @if($billing->status == 'paid' && $billing->paid_at)
+                                <span class="text-green-700">
+                                    Paid: {{ optional($billing->paid_at)->format('M d, Y') ?? '-' }}
+                                </span>
+                            @elseif($billing->due_date)
+                                <span class="text-red-700">
+                                    Due: {{ optional($billing->due_date)->format('M d, Y') ?? '-' }}
+                                </span>
+                            @else
+                                <span class="text-gray-500">N/A</span>
+                            @endif
+                        </td>
                         <td class="py-2 px-4 border-b">
                             <a href="{{ route('billing.show', $billing) }}" class="text-blue-500 hover:underline mr-2">View</a>
                             <a href="{{ route('billing.edit', $billing) }}" class="text-yellow-500 hover:underline mr-2">Edit</a>
                             <form action="{{ route('billing.destroy', $billing) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</button>
+                                <button type="submit" class="text-red-500 hover:underline" onclick="return confirm('Are you sure you want to delete this invoice?')">Delete</button>
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" class="py-4 px-4 text-center text-gray-500">No invoices found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

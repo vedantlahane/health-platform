@@ -26,7 +26,7 @@
                     <tr class="hover:bg-blue-50 transition">
                         <td class="py-2 px-4 font-medium text-gray-900">{{ $appointment->patient->name }}</td>
                         <td class="py-2 px-4 text-gray-700">{{ $appointment->doctor->name }}</td>
-                        <td class="py-2 px-4 text-gray-700">{{ $appointment->doctor->specialization ?? '-' }}</td>
+                        <td class="py-2 px-4 text-gray-700">{{ $appointment->specialization ?? '-' }}</td>
                         <td class="py-2 px-4 text-gray-700">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M Y, H:i') }}</td>
                         <td class="py-2 px-4 text-gray-700">{{ $appointment->reason ?? '-' }}</td>
                         <td class="py-2 px-4">
@@ -41,7 +41,6 @@
                             <a href="{{ route('appointments.edit', $appointment) }}"
                                class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 text-xs font-semibold"
                                title="Edit">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536M9 11l6 6M12 17h7v-7"/></svg>
                                 Edit
                             </a>
                             <form action="{{ route('appointments.destroy', $appointment) }}" method="POST" class="inline">
@@ -49,7 +48,6 @@
                                 <button type="submit"
                                         class="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-xs font-semibold"
                                         onclick="return confirm('Delete appointment?')" title="Delete">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
                                     Delete
                                 </button>
                             </form>

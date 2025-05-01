@@ -51,6 +51,13 @@
                                 <span class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Not Available</span>
                             @endif
                         </td>
+                        <td class="py-2 px-4">
+                            <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
+                                {{ $doctor->status == 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700' }}">
+                                {{ ucfirst($doctor->status) }}
+                            </span>
+                        </td>
+                        
                         <td class="py-2 px-4 text-gray-700">{{ $doctor->room_number ?? '-' }}</td>
                         <td class="py-2 px-4 text-gray-700">{{ $doctor->timing ?? '-' }}</td>
                         <td class="py-2 px-4 flex gap-2">
